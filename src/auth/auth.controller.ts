@@ -21,7 +21,7 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @Post('logout')
   logout(@Request() req) {
-    // For JWT, logout is handled client-side by discarding token
+    // For handling sessions, we would need to invalidate the session here
     return { message: 'Logged out' };
   }
 }
