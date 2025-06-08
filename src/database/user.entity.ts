@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { UserRole } from '../auth/dto/register.dto';
 
 @Entity('users')
 export class User {
@@ -11,6 +12,14 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ default: 'viewer' })
-  role: 'admin' | 'editor' | 'viewer';
+  @Column({
+    type: 'varchar',
+    length: 10,
+    default: UserRole.VIEWER,
+    transformer: {
+      to: (value: UserRole) => value,
+      from: (value: string) => value as UserRole
+    }
+  })
+  role: UserRole;
 }
