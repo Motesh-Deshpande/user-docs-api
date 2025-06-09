@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../database/user.entity';
+import { Document } from '../database/document.entity';
 import { Provider, DynamicModule, Type, INestApplication } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
@@ -17,17 +18,18 @@ interface TestModuleOptions {
 interface TestModuleResult {
   module: TestingModule;
   app?: INestApplication;
+  getMockRepository?: (entity: any) => any;
 }
 
-// Create repository mock
-const mockRepository = {
+// Factory function to create fresh mock repositories
+const createMockRepository = () => ({
   findOne: jest.fn(),
   create: jest.fn(),
   save: jest.fn(),
   find: jest.fn(),
   update: jest.fn(),
   delete: jest.fn(),
-};
+});
 
 // Create JWT service mock
 const mockJwtService = {
@@ -44,6 +46,10 @@ export const createTestingModule = async (options: TestModuleOptions = {}): Prom
     createApp = false,
   } = options;
 
+  // Create separate mock instances for each entity
+  const userMockRepository = createMockRepository();
+  const documentMockRepository = createMockRepository();
+
   const module: TestingModule = await Test.createTestingModule({
     imports: [
       ...imports,
@@ -57,7 +63,7 @@ export const createTestingModule = async (options: TestModuleOptions = {}): Prom
       TypeOrmModule.forRoot({
         type: 'sqlite',
         database: ':memory:',
-        entities: [User],
+        entities: [User, Document],
         synchronize: true,
         dropSchema: true,
       }),
@@ -66,22 +72,43 @@ export const createTestingModule = async (options: TestModuleOptions = {}): Prom
       ...providers,
       {
         provide: getRepositoryToken(User),
-        useValue: mockRepository,
+        useValue: userMockRepository,
       },
       {
+        provide: getRepositoryToken(Document),
+        useValue: documentMockRepository,
+      },
+      // Only provide mock JWT service if not creating an app
+      ...(createApp ? [] : [{
         provide: JwtService,
         useValue: mockJwtService,
-      },
+      }]),
     ],
     controllers,
   }).compile();
+
+  // Helper function to get mock repository for specific entity
+  const getMockRepository = (entity: any) => {
+    return module.get(getRepositoryToken(entity));
+  };
 
   if (createApp) {
     const app = module.createNestApplication();
     app.useGlobalPipes(new ValidationPipe({ transform: true }));
     await app.init();
-    return { module, app };
+    return { module, app, getMockRepository };
   }
 
-  return { module };
+  return { module, getMockRepository };
+};
+
+// Utility function to reset all mocks in a repository
+export const resetMockRepository = (mockRepo: any) => {
+  // Recreate Jest mock functions instead of just resetting
+  mockRepo.findOne = jest.fn();
+  mockRepo.create = jest.fn();
+  mockRepo.save = jest.fn();
+  mockRepo.find = jest.fn();
+  mockRepo.update = jest.fn();
+  mockRepo.delete = jest.fn();
 };
