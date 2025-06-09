@@ -4,9 +4,10 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 import { Roles } from '../common/decorators/roles.decorators';
 import { RolesGuard } from '../common/gaurds/roles.gaurd';
 import { UserRole } from '../auth/dto/register.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
-@UseGuards(RolesGuard)
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
@@ -15,7 +16,7 @@ export class UsersController {
   findAll() {
     return this.usersService.findAll();
   }
-
+  
   @Post('role')
   @Roles(UserRole.ADMIN)
   updateRole(@Body() dto: UpdateRoleDto) {
