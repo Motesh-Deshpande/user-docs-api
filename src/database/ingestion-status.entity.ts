@@ -11,6 +11,6 @@ export class IngestionStatus {
   @CreateDateColumn()
   createdAt: Date;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ nullable: true })
   updatedAt: Date;
 }
