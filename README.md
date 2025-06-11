@@ -6,6 +6,8 @@ A robust NestJS-based REST API for user authentication and document management w
 ![Test Coverage](https://img.shields.io/badge/tests-46%2F46%20passing-brightgreen)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.7.3-blue)
 ![NestJS](https://img.shields.io/badge/NestJS-11.0.1-red)
+![Deployment](https://img.shields.io/badge/deployment-ready-success)
+![Docker](https://img.shields.io/badge/docker-supported-blue)
 
 ## 🚀 Features
 
@@ -108,12 +110,20 @@ For detailed Docker setup instructions, see [DOCKER.md](DOCKER.md).
 
 **Quick Docker Start:**
 ```bash
-# Production
-cp docker.env.example .env
+# Production (3 commands - ready in <5 minutes)
+git clone https://github.com/Motesh-Deshpande/user-docs.git
+cd user-docs && cp docker.env.example .env
+# Edit .env (change DB_PASSWORD & JWT_SECRET), then:
 make up
+```
 
-# Development
-make dev-up
+**Deployment Verification:**
+```bash
+# Run pre-deployment check
+./deploy-check.sh
+
+# Test API health
+curl http://localhost:3000  # Returns: "HealthCheck OK!"
 ```
 
 ## 📚 API Documentation
