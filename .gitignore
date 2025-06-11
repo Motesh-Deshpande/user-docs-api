@@ -54,3 +54,13 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+uploads/
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+docker-compose.override.yml
+.env.local
+.env.*.local
+secrets/

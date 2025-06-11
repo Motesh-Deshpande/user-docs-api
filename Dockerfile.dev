@@ -1,0 +1,32 @@
+FROM node:18-alpine
+
+# Create app directory
+WORKDIR /app
+
+# Create a non-root user
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nestjs -u 1001
+
+# Install dependencies for development
+RUN apk add --no-cache curl
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies (including dev dependencies)
+RUN npm ci && npm cache clean --force
+
+# Copy source code
+COPY . .
+
+# Create uploads directory and set permissions
+RUN mkdir -p uploads && chown -R nestjs:nodejs /app
+
+# Switch to non-root user
+USER nestjs
+
+# Expose ports (app and debug)
+EXPOSE 3000 9229
+
+# Start the application in development mode with debugging
+CMD ["npm", "run", "start:debug"] 
