@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../database/user.entity';
 import { Document } from '../database/document.entity';
+import { IngestionStatus } from '../database/ingestion-status.entity';
 import { Provider, DynamicModule, Type, INestApplication } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
@@ -49,6 +50,7 @@ export const createTestingModule = async (options: TestModuleOptions = {}): Prom
   // Create separate mock instances for each entity
   const userMockRepository = createMockRepository();
   const documentMockRepository = createMockRepository();
+  const ingestionStatusMockRepository = createMockRepository();
 
   const module: TestingModule = await Test.createTestingModule({
     imports: [
@@ -63,7 +65,7 @@ export const createTestingModule = async (options: TestModuleOptions = {}): Prom
       TypeOrmModule.forRoot({
         type: 'sqlite',
         database: ':memory:',
-        entities: [User, Document],
+        entities: [User, Document, IngestionStatus],
         synchronize: true,
         dropSchema: true,
       }),
@@ -77,6 +79,10 @@ export const createTestingModule = async (options: TestModuleOptions = {}): Prom
       {
         provide: getRepositoryToken(Document),
         useValue: documentMockRepository,
+      },
+      {
+        provide: getRepositoryToken(IngestionStatus),
+        useValue: ingestionStatusMockRepository,
       },
       // Only provide mock JWT service if not creating an app
       ...(createApp ? [] : [{
@@ -104,7 +110,7 @@ export const createTestingModule = async (options: TestModuleOptions = {}): Prom
 
 // Utility function to reset all mocks in a repository
 export const resetMockRepository = (mockRepo: any) => {
-  // Recreate Jest mock functions instead of just resetting
+  // Recreating Jest mock functions instead of just resetting
   mockRepo.findOne = jest.fn();
   mockRepo.create = jest.fn();
   mockRepo.save = jest.fn();

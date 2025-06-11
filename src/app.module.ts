@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { DocumentsModule } from './documents/documents.module';
+import { IngestionModule } from './ingestion/ingestion.module';
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { DocumentsModule } from './documents/documents.module';
     AuthModule,
     UsersModule,
     DocumentsModule,
-    // TODO: import UsersModule, DocumentsModule, IngestionModule
+    IngestionModule,
   ],
 })
 export class AppModule {}
