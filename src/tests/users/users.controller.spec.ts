@@ -25,12 +25,14 @@ describe('UsersController', () => {
 
   describe('findAll', () => {
     it('should return an array of users', async () => {
-      const mockUsers: User[] = [{
-        id: '1',
-        email: 'test@test.com',
-        password: 'hashed',
-        role: UserRole.VIEWER
-      }];
+      const mockUsers: User[] = [
+        {
+          id: '1',
+          email: 'test@test.com',
+          password: 'hashed',
+          role: UserRole.VIEWER,
+        },
+      ];
       jest.spyOn(service, 'findAll').mockResolvedValueOnce(mockUsers);
 
       const result = await controller.findAll();
@@ -44,10 +46,12 @@ describe('UsersController', () => {
         id: '1',
         email: 'test@test.com',
         password: 'hashed',
-        role: UserRole.VIEWER
+        role: UserRole.VIEWER,
       };
       const dto = { id: '1', role: UserRole.ADMIN };
-      jest.spyOn(service, 'updateRole').mockResolvedValueOnce({ ...mockUser, role: UserRole.ADMIN });
+      jest
+        .spyOn(service, 'updateRole')
+        .mockResolvedValueOnce({ ...mockUser, role: UserRole.ADMIN });
 
       const result = await controller.updateRole(dto);
       expect(result.role).toBe(UserRole.ADMIN);

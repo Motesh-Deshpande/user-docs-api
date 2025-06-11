@@ -3,7 +3,12 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../database/user.entity';
 import { Document } from '../database/document.entity';
 import { IngestionStatus } from '../database/ingestion-status.entity';
-import { Provider, DynamicModule, Type, INestApplication } from '@nestjs/common';
+import {
+  Provider,
+  DynamicModule,
+  Type,
+  INestApplication,
+} from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule, JwtService } from '@nestjs/jwt';
@@ -39,7 +44,9 @@ const mockJwtService = {
   decode: jest.fn(),
 };
 
-export const createTestingModule = async (options: TestModuleOptions = {}): Promise<TestModuleResult> => {
+export const createTestingModule = async (
+  options: TestModuleOptions = {},
+): Promise<TestModuleResult> => {
   const {
     providers = [],
     controllers = [],
@@ -57,10 +64,12 @@ export const createTestingModule = async (options: TestModuleOptions = {}): Prom
       ...imports,
       ConfigModule.forRoot({
         isGlobal: true,
-        load: [() => ({
-          JWT_SECRET: 'test-secret',
-          JWT_EXPIRES_IN: '1h',
-        })],
+        load: [
+          () => ({
+            JWT_SECRET: 'test-secret',
+            JWT_EXPIRES_IN: '1h',
+          }),
+        ],
       }),
       TypeOrmModule.forRoot({
         type: 'sqlite',
@@ -85,10 +94,14 @@ export const createTestingModule = async (options: TestModuleOptions = {}): Prom
         useValue: ingestionStatusMockRepository,
       },
       // Only provide mock JWT service if not creating an app
-      ...(createApp ? [] : [{
-        provide: JwtService,
-        useValue: mockJwtService,
-      }]),
+      ...(createApp
+        ? []
+        : [
+            {
+              provide: JwtService,
+              useValue: mockJwtService,
+            },
+          ]),
     ],
     controllers,
   }).compile();

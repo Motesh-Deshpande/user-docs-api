@@ -18,8 +18,8 @@ export class User {
     default: UserRole.VIEWER,
     transformer: {
       to: (value: UserRole) => value,
-      from: (value: string) => value as UserRole
-    }
+      from: (value: string) => value as UserRole,
+    },
   })
   role: UserRole;
 }

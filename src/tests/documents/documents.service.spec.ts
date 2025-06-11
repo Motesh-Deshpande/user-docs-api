@@ -17,7 +17,7 @@ describe('DocumentsService', () => {
     description: 'Test Description',
     filePath: 'uploads/test.txt',
     uploadedBy: mockUser,
-    deleted: false
+    deleted: false,
   } as Document;
 
   beforeEach(async () => {
@@ -28,7 +28,7 @@ describe('DocumentsService', () => {
     service = module.get<DocumentsService>(DocumentsService);
     // Get the Document-specific mock repository
     mockRepository = getMockRepository!(Document);
-    
+
     // Reset all mocks to ensure clean state
     resetMockRepository(mockRepository);
   });
@@ -38,13 +38,13 @@ describe('DocumentsService', () => {
       // Arrange
       const dto = { title: 'Test Doc', description: 'Test Description' };
       const filePath = 'uploads/test.txt';
-      
+
       const createdDoc = {
         ...dto,
         filePath,
         uploadedBy: { id: mockUser.id },
         id: '1',
-        deleted: false
+        deleted: false,
       };
 
       mockRepository.create.mockReturnValue(createdDoc);
@@ -58,7 +58,7 @@ describe('DocumentsService', () => {
       expect(mockRepository.create).toHaveBeenCalledWith({
         ...dto,
         filePath,
-        uploadedBy: { id: mockUser.id }
+        uploadedBy: { id: mockUser.id },
       });
       expect(mockRepository.save).toHaveBeenCalledWith(createdDoc);
     });
@@ -76,7 +76,7 @@ describe('DocumentsService', () => {
       // Assert
       expect(result).toEqual(mockDocuments);
       expect(mockRepository.find).toHaveBeenCalledWith({
-        where: { deleted: false }
+        where: { deleted: false },
       });
     });
   });
@@ -92,7 +92,7 @@ describe('DocumentsService', () => {
       // Assert
       expect(result).toEqual(mockDocument);
       expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { id: '1', deleted: false }
+        where: { id: '1', deleted: false },
       });
     });
 
@@ -103,7 +103,7 @@ describe('DocumentsService', () => {
       // Act & Assert
       await expect(service.findOne('1')).rejects.toThrow(NotFoundException);
       expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { id: '1', deleted: false }
+        where: { id: '1', deleted: false },
       });
     });
   });
@@ -113,7 +113,7 @@ describe('DocumentsService', () => {
       // Arrange
       const updateDto = { title: 'Updated Title' };
       const updatedDoc = { ...mockDocument, ...updateDto };
-      
+
       mockRepository.findOne.mockResolvedValue(mockDocument);
       mockRepository.save.mockResolvedValue(updatedDoc);
 
@@ -123,7 +123,7 @@ describe('DocumentsService', () => {
       // Assert
       expect(result).toEqual(updatedDoc);
       expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { id: '1', deleted: false }
+        where: { id: '1', deleted: false },
       });
       expect(mockRepository.save).toHaveBeenCalled();
     });
@@ -133,8 +133,9 @@ describe('DocumentsService', () => {
       mockRepository.findOne.mockResolvedValue(null);
 
       // Act & Assert
-      await expect(service.update('1', { title: 'New Title' }))
-        .rejects.toThrow(NotFoundException);
+      await expect(service.update('1', { title: 'New Title' })).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -149,11 +150,11 @@ describe('DocumentsService', () => {
 
       // Assert
       expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { id: '1', deleted: false }
+        where: { id: '1', deleted: false },
       });
       expect(mockRepository.save).toHaveBeenCalledWith({
         ...mockDocument,
-        deleted: true
+        deleted: true,
       });
     });
 

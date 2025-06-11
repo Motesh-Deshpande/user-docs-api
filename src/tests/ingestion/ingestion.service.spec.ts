@@ -30,7 +30,7 @@ describe('IngestionService', () => {
     mockRepository = module.get(getRepositoryToken(IngestionStatus));
 
     // Reset all mocks to ensure clean state
-    Object.keys(mockRepository).forEach(key => {
+    Object.keys(mockRepository).forEach((key) => {
       if (typeof mockRepository[key] === 'function') {
         mockRepository[key] = jest.fn();
       }
@@ -40,15 +40,18 @@ describe('IngestionService', () => {
   it('should trigger ingestion and return in_progress status', async () => {
     const dto = { source: 'test' };
     const record = { id: '1', status: 'pending' } as IngestionStatus;
-    const inProgressRecord = { ...record, status: 'in_progress' } as IngestionStatus;
-    
+    const inProgressRecord = {
+      ...record,
+      status: 'in_progress',
+    } as IngestionStatus;
+
     mockRepository.create.mockReturnValue(record);
     mockRepository.save
       .mockResolvedValueOnce(record) // First save after create
       .mockResolvedValueOnce(inProgressRecord); // Second save for in_progress
-    
+
     const res = await service.trigger(dto);
-    
+
     expect(res.status).toBe('in_progress');
     expect(mockRepository.create).toHaveBeenCalledWith({ status: 'pending' });
     expect(mockRepository.save).toHaveBeenCalledWith(record); // First save
@@ -59,17 +62,21 @@ describe('IngestionService', () => {
   it('should return status record', async () => {
     const rec = { id: '2', status: 'completed' } as IngestionStatus;
     mockRepository.findOne.mockResolvedValue(rec);
-    
+
     const res = await service.status('2');
-    
+
     expect(res).toBe(rec);
     expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: '2' } });
   });
 
   it('should throw NotFoundException when status record not found', async () => {
     mockRepository.findOne.mockResolvedValue(null);
-    
-    await expect(service.status('nonexistent')).rejects.toThrow('Ingestion record not found');
-    expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: 'nonexistent' } });
+
+    await expect(service.status('nonexistent')).rejects.toThrow(
+      'Ingestion record not found',
+    );
+    expect(mockRepository.findOne).toHaveBeenCalledWith({
+      where: { id: 'nonexistent' },
+    });
   });
 });

@@ -3,7 +3,7 @@ import { IsEmail, IsString, MinLength, IsEnum } from 'class-validator';
 export enum UserRole {
   ADMIN = 'admin',
   EDITOR = 'editor',
-  VIEWER = 'viewer'
+  VIEWER = 'viewer',
 }
 
 export class RegisterDto {

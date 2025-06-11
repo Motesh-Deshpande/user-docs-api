@@ -74,14 +74,14 @@ describe('DocumentsController', () => {
         path: 'uploads/test.txt',
         size: 1024,
         buffer: Buffer.from('test content'),
-        stream: new Readable()
+        stream: new Readable(),
       };
       const mockDoc = {
         id: '1',
         ...dto,
         filePath: file.path,
         uploadedBy: user,
-        deleted: false
+        deleted: false,
       } as Document;
 
       // Create a valid JWT token
@@ -98,15 +98,17 @@ describe('DocumentsController', () => {
 
   describe('findAll', () => {
     it('should return an array of documents', async () => {
-      const mockDocs = [{
-        id: '1',
-        title: 'Test Doc',
-        description: 'Test Description',
-        filePath: 'uploads/test.txt',
-        uploadedBy: { id: '1', email: 'test@example.com' },
-        deleted: false
-      }] as Document[];
-      
+      const mockDocs = [
+        {
+          id: '1',
+          title: 'Test Doc',
+          description: 'Test Description',
+          filePath: 'uploads/test.txt',
+          uploadedBy: { id: '1', email: 'test@example.com' },
+          deleted: false,
+        },
+      ] as Document[];
+
       jest.spyOn(service, 'findAll').mockResolvedValue(mockDocs);
 
       const result = await controller.findAll();
@@ -123,9 +125,9 @@ describe('DocumentsController', () => {
         description: 'Test Description',
         filePath: 'uploads/test.txt',
         uploadedBy: { id: '1', email: 'test@example.com' },
-        deleted: false
+        deleted: false,
       } as Document;
-      
+
       jest.spyOn(service, 'findOne').mockResolvedValue(mockDoc);
 
       const result = await controller.findOne('1');

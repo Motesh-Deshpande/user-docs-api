@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Document } from '../database/document.entity';
@@ -13,8 +17,16 @@ export class DocumentsService {
     private docsRepo: Repository<Document>,
   ) {}
 
-  async create(filePath: string, dto: CreateDocumentDto, user: User): Promise<Document> {
-    const doc = this.docsRepo.create({ ...dto, filePath, uploadedBy: {id: user.id} });
+  async create(
+    filePath: string,
+    dto: CreateDocumentDto,
+    user: User,
+  ): Promise<Document> {
+    const doc = this.docsRepo.create({
+      ...dto,
+      filePath,
+      uploadedBy: { id: user.id },
+    });
     return this.docsRepo.save(doc);
   }
 

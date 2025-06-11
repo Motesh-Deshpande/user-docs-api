@@ -16,7 +16,7 @@ export class UsersController {
   findAll() {
     return this.usersService.findAll();
   }
-  
+
   @Post('role')
   @Roles(UserRole.ADMIN)
   updateRole(@Body() dto: UpdateRoleDto) {

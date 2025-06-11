@@ -39,11 +39,11 @@ describe('IngestionController (e2e)', () => {
     await request(app.getHttpServer())
       .post('/auth/register')
       .send({ email: 'ingest@test.com', password: 'password', role: 'editor' });
-      
+
     const login = await request(app.getHttpServer())
       .post('/auth/login')
       .send({ email: 'ingest@test.com', password: 'password' });
-      
+
     token = login.body.token;
   });
 
@@ -66,7 +66,7 @@ describe('IngestionController (e2e)', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({ source: 'unit-test' })
       .expect(201)
-      .expect(res => {
+      .expect((res) => {
         expect(res.body).toHaveProperty('id');
         expect(res.body.id).toBe('1');
         expect(res.body.status).toBe('in_progress');
@@ -76,12 +76,12 @@ describe('IngestionController (e2e)', () => {
   it('/ingestion/status/:id (GET)', async () => {
     const mockStatus = { id: '2', status: 'completed' } as IngestionStatus;
     jest.spyOn(ingestionService, 'status').mockResolvedValue(mockStatus);
-    
+
     return request(app.getHttpServer())
       .get('/ingestion/status/2')
       .set('Authorization', `Bearer ${token}`)
       .expect(200)
-      .expect(res => {
+      .expect((res) => {
         expect(res.body).toHaveProperty('status');
         expect(res.body.status).toBe('completed');
         expect(res.body.id).toBe('2');
